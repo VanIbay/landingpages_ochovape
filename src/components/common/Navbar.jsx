@@ -57,7 +57,8 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           {/* Logo */}
-          <a href="#hero" className="flex items-center gap-2 group" onClick={(e) => handleNavClick(e, '#hero')}>
+          <a href="#hero" className="flex items-center gap-3 group" onClick={(e) => handleNavClick(e, '#hero')}>
+            <img src="/logo-ocho.jpeg" alt="Ocho Vape" className="w-8 h-8 rounded-full border border-white/20 shadow-lg object-cover" />
             <span className="text-2xl font-heading font-bold text-primary group-hover:text-accent transition-colors">
               Ocho<span className="text-white">Vape</span>
             </span>

@@ -49,6 +49,16 @@ export default function HeroBanner() {
 
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center pt-24 pb-12">
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="mb-6 flex justify-center"
+        >
+          <img src="/logo-ocho.jpeg" alt="Ocho Vape Store" className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full shadow-[0_0_40px_rgba(37,99,235,0.4)] border border-white/20 object-cover" />
+        </motion.div>
+
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -68,7 +78,7 @@ export default function HeroBanner() {
           transition={{ delay: 0.4, duration: 0.8 }}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white leading-tight mb-6"
         >
-          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl">vape store Terpercaya & Terdekat</span>
+          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Vape Store Terpercaya & Terdekat</span>
           <span className="gradient-text block text-2xl sm:text-3xl md:text-4xl mt-3">di Pasir Angin, Cileungsi</span>
         </motion.h1>
 

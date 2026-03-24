@@ -1,4 +1,4 @@
-const ADMIN_USER = import.meta.env.VITE_ADMIN_USER || 'roma';
+const ADMIN_USER = import.meta.env.VITE_ADMIN_USER || 'ocho';
 const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || 'ochovape1234';
 
 export function login(username, password) {

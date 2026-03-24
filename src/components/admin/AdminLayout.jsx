@@ -42,7 +42,8 @@ export default function AdminLayout({ children, activeMenu, onMenuChange }) {
       >
         {/* Logo */}
         <div className="p-5 border-b border-white/5 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-3">
+            <img src="/logo-ocho.jpeg" alt="Ocho Vape" className="w-8 h-8 rounded-full border border-white/20 object-cover" />
             <span className="text-xl font-heading font-bold text-primary">
               Ocho<span className="text-white">Vape</span>
             </span>
