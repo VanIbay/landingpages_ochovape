@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useData } from '../../context/DataContext';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave, FiLoader } from 'react-icons/fi';
 
 export default function ServicesManager() {
-  const { services, setServices } = useData();
+  const { services, addService, updateService, deleteService, saving } = useData();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ icon: '', title: '', description: '', price: '' });
 
@@ -17,18 +17,27 @@ export default function ServicesManager() {
     setEditing(svc.id);
   };
 
-  const save = () => {
+  const save = async () => {
     if (!form.title.trim()) return;
-    if (editing === 'new') {
-      setServices([...services, { ...form, id: Date.now() }]);
-    } else {
-      setServices(services.map((s) => (s.id === editing ? { ...s, ...form } : s)));
+    try {
+      if (editing === 'new') {
+        await addService(form);
+      } else {
+        await updateService(editing, form);
+      }
+      setEditing(null);
+    } catch (err) {
+      alert('Gagal menyimpan: ' + err.message);
     }
-    setEditing(null);
   };
 
-  const remove = (id) => {
-    setServices(services.filter((s) => s.id !== id));
+  const remove = async (id) => {
+    if (!window.confirm('Hapus layanan ini?')) return;
+    try {
+      await deleteService(id);
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
   };
 
   return (
@@ -53,8 +62,9 @@ export default function ServicesManager() {
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Judul layanan" className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary" />
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Deskripsi" rows={3} className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary resize-none" />
             <input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="Harga (contoh: Mulai Rp 35.000)" className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary" />
-            <button onClick={save} className="btn-primary w-full !py-2.5 flex items-center justify-center gap-2">
-              <FiSave className="w-4 h-4" /> Simpan
+            <button onClick={save} disabled={saving} className="btn-primary w-full !py-2.5 flex items-center justify-center gap-2 disabled:opacity-50">
+              {saving ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSave className="w-4 h-4" />}
+              {saving ? 'Menyimpan...' : 'Simpan'}
             </button>
           </div>
         </div>
@@ -76,7 +86,7 @@ export default function ServicesManager() {
               <button onClick={() => openEdit(svc)} className="p-2 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
                 <FiEdit2 className="w-3.5 h-3.5" />
               </button>
-              <button onClick={() => remove(svc.id)} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+              <button onClick={() => remove(svc.id)} disabled={saving} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50">
                 <FiTrash2 className="w-3.5 h-3.5" />
               </button>
             </div>

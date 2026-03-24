@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useData } from '../../context/DataContext';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave, FiCalendar } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave, FiCalendar, FiLoader } from 'react-icons/fi';
 
 export default function BlogManager() {
-  const { blogPosts, setBlogPosts } = useData();
+  const { blogPosts, addBlogPost, updateBlogPost, deleteBlogPost, saving } = useData();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ title: '', slug: '', content: '', tags: '', date: '', thumbnail: '' });
 
@@ -21,23 +21,33 @@ export default function BlogManager() {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   };
 
-  const save = () => {
-
+  const save = async () => {
     if (!form.title.trim() || !form.content.trim()) return;
     const data = {
       ...form,
       slug: form.slug || generateSlug(form.title),
       tags: typeof form.tags === 'string' ? form.tags.split(',').map((t) => t.trim()).filter(Boolean) : form.tags,
     };
-    if (editing === 'new') {
-      setBlogPosts([...blogPosts, { ...data, id: Date.now() }]);
-    } else {
-      setBlogPosts(blogPosts.map((p) => (p.id === editing ? { ...p, ...data } : p)));
+    try {
+      if (editing === 'new') {
+        await addBlogPost(data);
+      } else {
+        await updateBlogPost(editing, data);
+      }
+      setEditing(null);
+    } catch (err) {
+      alert('Gagal menyimpan: ' + err.message);
     }
-    setEditing(null);
   };
 
-  const remove = (id) => setBlogPosts(blogPosts.filter((p) => p.id !== id));
+  const remove = async (id) => {
+    if (!window.confirm('Hapus artikel ini?')) return;
+    try {
+      await deleteBlogPost(id);
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -58,7 +68,10 @@ export default function BlogManager() {
             <input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="Tags (pisahkan dengan koma)" className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary" />
             <input value={form.thumbnail} onChange={(e) => setForm({ ...form, thumbnail: e.target.value })} placeholder="URL thumbnail (opsional)" className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary" />
             <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} placeholder="Konten artikel..." rows={8} className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary resize-none" />
-            <button onClick={save} className="btn-primary w-full !py-2.5 flex items-center justify-center gap-2"><FiSave className="w-4 h-4" /> Simpan</button>
+            <button onClick={save} disabled={saving} className="btn-primary w-full !py-2.5 flex items-center justify-center gap-2 disabled:opacity-50">
+              {saving ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSave className="w-4 h-4" />}
+              {saving ? 'Menyimpan...' : 'Simpan'}
+            </button>
           </div>
         </div>
       )}
@@ -75,7 +88,7 @@ export default function BlogManager() {
             </div>
             <div className="flex items-center gap-1 ml-2">
               <button onClick={() => openEdit(post)} className="p-2 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"><FiEdit2 className="w-3.5 h-3.5" /></button>
-              <button onClick={() => remove(post.id)} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"><FiTrash2 className="w-3.5 h-3.5" /></button>
+              <button onClick={() => remove(post.id)} disabled={saving} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"><FiTrash2 className="w-3.5 h-3.5" /></button>
             </div>
           </div>
         ))}

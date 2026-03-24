@@ -1,13 +1,24 @@
 import { useData } from '../../context/DataContext';
-import { FiTrash2, FiMail } from 'react-icons/fi';
+import { FiTrash2, FiMail, FiLoader } from 'react-icons/fi';
 
 export default function MessagesManager() {
-  const { messages, setMessages } = useData();
+  const { messages, deleteMessage, clearMessages, saving } = useData();
 
-  const remove = (id) => setMessages(messages.filter((m) => m.id !== id));
+  const remove = async (id) => {
+    try {
+      await deleteMessage(id);
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
+  };
 
-  const clearAll = () => {
-    if (window.confirm('Hapus semua pesan?')) setMessages([]);
+  const handleClearAll = async () => {
+    if (!window.confirm('Hapus semua pesan?')) return;
+    try {
+      await clearMessages();
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
   };
 
   return (
@@ -15,7 +26,8 @@ export default function MessagesManager() {
       {messages.length > 0 && (
         <div className="flex justify-between items-center">
           <span className="text-gray-400 text-sm">{messages.length} pesan</span>
-          <button onClick={clearAll} className="text-red-400 text-sm hover:text-red-300 transition-colors">
+          <button onClick={handleClearAll} disabled={saving} className="text-red-400 text-sm hover:text-red-300 transition-colors disabled:opacity-50 flex items-center gap-1">
+            {saving && <FiLoader className="w-3 h-3 animate-spin" />}
             Hapus Semua
           </button>
         </div>
@@ -35,7 +47,7 @@ export default function MessagesManager() {
                   <h4 className="text-white font-semibold text-sm">{msg.name}</h4>
                   <p className="text-gray-500 text-xs">{new Date(msg.date).toLocaleString('id-ID')}</p>
                 </div>
-                <button onClick={() => remove(msg.id)} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                <button onClick={() => remove(msg.id)} disabled={saving} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50">
                   <FiTrash2 className="w-4 h-4" />
                 </button>
               </div>

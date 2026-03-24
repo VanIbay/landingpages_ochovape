@@ -1,9 +1,9 @@
 import { useData } from '../../context/DataContext';
-import { FiSave } from 'react-icons/fi';
+import { FiSave, FiLoader } from 'react-icons/fi';
 import { useState } from 'react';
 
 export default function SettingsManager() {
-  const { settings, setSettings } = useData();
+  const { settings, saveSettings, saving } = useData();
   const [form, setForm] = useState({ ...settings });
   const [saved, setSaved] = useState(false);
 
@@ -11,10 +11,14 @@ export default function SettingsManager() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const save = () => {
-    setSettings(form);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+  const save = async () => {
+    try {
+      await saveSettings(form);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      alert('Gagal menyimpan: ' + err.message);
+    }
   };
 
   const fields = [
@@ -48,8 +52,9 @@ export default function SettingsManager() {
       </div>
 
       <div className="flex items-center gap-4">
-        <button onClick={save} className="btn-primary !py-2.5 flex items-center gap-2">
-          <FiSave className="w-4 h-4" /> Simpan Pengaturan
+        <button onClick={save} disabled={saving} className="btn-primary !py-2.5 flex items-center gap-2 disabled:opacity-50">
+          {saving ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSave className="w-4 h-4" />}
+          {saving ? 'Menyimpan...' : 'Simpan Pengaturan'}
         </button>
         {saved && <span className="text-green-400 text-sm">✓ Tersimpan!</span>}
       </div>

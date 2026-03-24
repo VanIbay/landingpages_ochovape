@@ -17,16 +17,25 @@ export default function ContactForm() {
     message: '',
   });
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addMessage(form);
-    setSuccess(true);
-    setForm({ name: '', whatsapp: '', vehicle: '', service: '', message: '' });
-    setTimeout(() => setSuccess(false), 5000);
+    setSubmitting(true);
+    try {
+      await addMessage(form);
+      setSuccess(true);
+      setForm({ name: '', whatsapp: '', vehicle: '', service: '', message: '' });
+      setTimeout(() => setSuccess(false), 5000);
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

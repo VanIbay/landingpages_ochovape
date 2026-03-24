@@ -1,21 +1,30 @@
 import { useState } from 'react';
 import { useData } from '../../context/DataContext';
-import { FiPlus, FiTrash2, FiX } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiX, FiLoader } from 'react-icons/fi';
 
 export default function GalleryManager() {
-  const { gallery, setGallery } = useData();
+  const { gallery, addGalleryItem, deleteGalleryItem, saving } = useData();
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ url: '', caption: '' });
 
-  const add = () => {
+  const add = async () => {
     if (!form.caption.trim()) return;
-    setGallery([...gallery, { ...form, id: Date.now() }]);
-    setForm({ url: '', caption: '' });
-    setShowAdd(false);
+    try {
+      await addGalleryItem(form);
+      setForm({ url: '', caption: '' });
+      setShowAdd(false);
+    } catch (err) {
+      alert('Gagal menambah: ' + err.message);
+    }
   };
 
-  const remove = (id) => {
-    setGallery(gallery.filter((g) => g.id !== id));
+  const remove = async (id) => {
+    if (!window.confirm('Hapus foto ini?')) return;
+    try {
+      await deleteGalleryItem(id);
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
   };
 
   return (
@@ -33,7 +42,10 @@ export default function GalleryManager() {
             </div>
             <input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="URL gambar (kosongkan untuk placeholder)" className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary" />
             <input value={form.caption} onChange={(e) => setForm({ ...form, caption: e.target.value })} placeholder="Caption" className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary" />
-            <button onClick={add} className="btn-primary w-full !py-2.5">Simpan</button>
+            <button onClick={add} disabled={saving} className="btn-primary w-full !py-2.5 flex items-center justify-center gap-2 disabled:opacity-50">
+              {saving ? <FiLoader className="w-4 h-4 animate-spin" /> : null}
+              {saving ? 'Menyimpan...' : 'Simpan'}
+            </button>
           </div>
         </div>
       )}
@@ -49,7 +61,7 @@ export default function GalleryManager() {
               </div>
             )}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <button onClick={() => remove(item.id)} className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors">
+              <button onClick={() => remove(item.id)} disabled={saving} className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors disabled:opacity-50">
                 <FiTrash2 className="w-5 h-5" />
               </button>
             </div>

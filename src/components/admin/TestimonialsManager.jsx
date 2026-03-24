@@ -1,27 +1,38 @@
 import { useState } from 'react';
 import { useData } from '../../context/DataContext';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave, FiLoader } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 
 export default function TestimonialsManager() {
-  const { testimonials, setTestimonials } = useData();
+  const { testimonials, addTestimonial, updateTestimonial, deleteTestimonial, saving } = useData();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: '', vehicle: '', rating: 5, text: '', avatar: '' });
 
   const openNew = () => { setForm({ name: '', vehicle: '', rating: 5, text: '', avatar: '' }); setEditing('new'); };
   const openEdit = (t) => { setForm({ ...t }); setEditing(t.id); };
 
-  const save = () => {
+  const save = async () => {
     if (!form.name.trim() || !form.text.trim()) return;
-    if (editing === 'new') {
-      setTestimonials([...testimonials, { ...form, id: Date.now() }]);
-    } else {
-      setTestimonials(testimonials.map((t) => (t.id === editing ? { ...t, ...form } : t)));
+    try {
+      if (editing === 'new') {
+        await addTestimonial(form);
+      } else {
+        await updateTestimonial(editing, form);
+      }
+      setEditing(null);
+    } catch (err) {
+      alert('Gagal menyimpan: ' + err.message);
     }
-    setEditing(null);
   };
 
-  const remove = (id) => setTestimonials(testimonials.filter((t) => t.id !== id));
+  const remove = async (id) => {
+    if (!window.confirm('Hapus testimoni ini?')) return;
+    try {
+      await deleteTestimonial(id);
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -47,7 +58,10 @@ export default function TestimonialsManager() {
               ))}
             </div>
             <textarea value={form.text} onChange={(e) => setForm({ ...form, text: e.target.value })} placeholder="Testimoni" rows={3} className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary resize-none" />
-            <button onClick={save} className="btn-primary w-full !py-2.5 flex items-center justify-center gap-2"><FiSave className="w-4 h-4" /> Simpan</button>
+            <button onClick={save} disabled={saving} className="btn-primary w-full !py-2.5 flex items-center justify-center gap-2 disabled:opacity-50">
+              {saving ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSave className="w-4 h-4" />}
+              {saving ? 'Menyimpan...' : 'Simpan'}
+            </button>
           </div>
         </div>
       )}
@@ -69,7 +83,7 @@ export default function TestimonialsManager() {
             </div>
             <div className="flex items-center gap-1 ml-2">
               <button onClick={() => openEdit(t)} className="p-2 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"><FiEdit2 className="w-3.5 h-3.5" /></button>
-              <button onClick={() => remove(t.id)} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"><FiTrash2 className="w-3.5 h-3.5" /></button>
+              <button onClick={() => remove(t.id)} disabled={saving} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"><FiTrash2 className="w-3.5 h-3.5" /></button>
             </div>
           </div>
         ))}

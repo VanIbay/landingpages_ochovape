@@ -1,23 +1,35 @@
 import { useState } from 'react';
 import { useData } from '../../context/DataContext';
-import { FiPlus, FiTrash2, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiToggleLeft, FiToggleRight, FiLoader } from 'react-icons/fi';
 
 export default function RunningTextManager() {
-  const { runningTexts, setRunningTexts } = useData();
+  const { runningTexts, addRunningText, updateRunningText, deleteRunningText, saving } = useData();
   const [newText, setNewText] = useState('');
 
-  const addText = () => {
+  const addText = async () => {
     if (!newText.trim()) return;
-    setRunningTexts([...runningTexts, { id: Date.now(), text: newText.trim(), active: true }]);
-    setNewText('');
+    try {
+      await addRunningText({ text: newText.trim(), active: true });
+      setNewText('');
+    } catch (err) {
+      alert('Gagal menambah: ' + err.message);
+    }
   };
 
-  const toggleActive = (id) => {
-    setRunningTexts(runningTexts.map((t) => (t.id === id ? { ...t, active: !t.active } : t)));
+  const toggleActive = async (item) => {
+    try {
+      await updateRunningText(item.id, { ...item, active: !item.active });
+    } catch (err) {
+      alert('Gagal mengubah: ' + err.message);
+    }
   };
 
-  const deleteText = (id) => {
-    setRunningTexts(runningTexts.filter((t) => t.id !== id));
+  const remove = async (id) => {
+    try {
+      await deleteRunningText(id);
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
   };
 
   return (
@@ -32,8 +44,8 @@ export default function RunningTextManager() {
           onKeyDown={(e) => e.key === 'Enter' && addText()}
           className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-primary outline-none text-sm"
         />
-        <button onClick={addText} className="btn-primary !py-2 !px-4 flex items-center gap-2">
-          <FiPlus className="w-4 h-4" /> Tambah
+        <button onClick={addText} disabled={saving} className="btn-primary !py-2 !px-4 flex items-center gap-2 disabled:opacity-50">
+          {saving ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiPlus className="w-4 h-4" />} Tambah
         </button>
       </div>
 
@@ -49,8 +61,9 @@ export default function RunningTextManager() {
             <span className="text-white text-sm flex-1 mr-4">{item.text}</span>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => toggleActive(item.id)}
-                className={`p-2 rounded-lg transition-colors ${
+                onClick={() => toggleActive(item)}
+                disabled={saving}
+                className={`p-2 rounded-lg transition-colors disabled:opacity-50 ${
                   item.active ? 'text-green-400 hover:bg-green-500/10' : 'text-gray-500 hover:bg-white/5'
                 }`}
                 title={item.active ? 'Aktif' : 'Nonaktif'}
@@ -58,8 +71,9 @@ export default function RunningTextManager() {
                 {item.active ? <FiToggleRight className="w-5 h-5" /> : <FiToggleLeft className="w-5 h-5" />}
               </button>
               <button
-                onClick={() => deleteText(item.id)}
-                className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                onClick={() => remove(item.id)}
+                disabled={saving}
+                className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
               >
                 <FiTrash2 className="w-4 h-4" />
               </button>
