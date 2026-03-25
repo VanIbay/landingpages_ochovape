@@ -78,8 +78,8 @@ export default function HeroBanner() {
           transition={{ delay: 0.4, duration: 0.8 }}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white leading-tight mb-6"
         >
-          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Vape Store Terpercaya & Terdekat</span>
-          <span className="gradient-text block text-2xl sm:text-3xl md:text-4xl mt-3">di Cilangkap, Jakarta Timur</span>
+          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl">{settings.heroTitle1 || 'Vape Store Terpercaya & Terdekat'}</span>
+          <span className="gradient-text block text-2xl sm:text-3xl md:text-4xl mt-3">{settings.heroTitle2 || 'di Cilangkap, Jakarta Timur'}</span>
         </motion.h1>
 
         {/* Subheadline */}
@@ -89,7 +89,7 @@ export default function HeroBanner() {
           transition={{ delay: 0.6 }}
           className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          {t('hero.subheadline')}
+          {settings.heroSubtitle || t('hero.subheadline') || 'Vapista ramah siap melayani kebutuhan vaping Anda mulai dari Pods, Mod, Liquid, hingga sparepart.'}
         </motion.p>
 
         {/* CTA Buttons */}

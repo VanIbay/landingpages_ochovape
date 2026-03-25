@@ -186,6 +186,9 @@ export const defaultSettings = {
   tiktok: import.meta.env.VITE_TIKTOK || '@ochovape',
   operatingHours: import.meta.env.VITE_OPERATING_HOURS || 'Senin - Minggu: 08:00 - 23:00',
   mapEmbedUrl: import.meta.env.VITE_MAP_EMBED_URL || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11534.813536056592!2d106.90509514441901!3d-6.340279338200716!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ed0076ef56a7%3A0x8e1bef24eaeecdf5!2sOcho%20Vapestore%20Cilangkap!5e1!3m2!1sen!2sid!4v1774411946959!5m2!1sen!2sid',
+  heroTitle1: import.meta.env.VITE_HERO_TITLE1 || 'Vape Store Terpercaya & Terdekat',
+  heroTitle2: import.meta.env.VITE_HERO_TITLE2 || 'di Cilangkap, Jakarta Timur',
+  heroSubtitle: import.meta.env.VITE_HERO_SUBTITLE || 'Vapista ramah siap melayani kebutuhan vaping Anda mulai dari Pods, Mod, Liquid, hingga sparepart.',
 };
 
 export const defaultMessages = [];

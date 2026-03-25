@@ -431,7 +431,7 @@ OchoVape/
 - [x] Scroll To Top Button
 
 ### Admin Panel
-- [x] Admin Login Page (user: `roma`, pass: `OchoVape1234`)
+- [x] Admin Login Page (user: `ocho`, pass: `ochovape1234`)
 - [x] Admin Dashboard (6 stat cards + recent messages)
 - [x] Admin CRUD Running Text (add/toggle/delete)
 - [x] Admin CRUD Layanan (modal: icon, title, desc, price)

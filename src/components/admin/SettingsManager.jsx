@@ -21,7 +21,7 @@ export default function SettingsManager() {
     }
   };
 
-  const fields = [
+  const generalFields = [
     { name: 'shopName', label: 'Nama Vape Store', type: 'text' },
     { name: 'tagline', label: 'Tagline', type: 'text' },
     { name: 'address', label: 'Alamat', type: 'text' },
@@ -34,21 +34,39 @@ export default function SettingsManager() {
     { name: 'mapEmbedUrl', label: 'Google Maps Embed URL', type: 'url' },
   ];
 
+  const heroFields = [
+    { name: 'heroTitle1', label: 'Teks Banner (Baris 1)', type: 'text' },
+    { name: 'heroTitle2', label: 'Teks Banner (Baris 2)', type: 'text' },
+    { name: 'heroSubtitle', label: 'Sub-teks Banner', type: 'text' },
+  ];
+
+  const renderField = (field) => (
+    <div key={field.name}>
+      <label className="block text-gray-400 text-xs mb-1.5">{field.label}</label>
+      <input
+        type={field.type}
+        name={field.name}
+        value={form[field.name] || ''}
+        onChange={handleChange}
+        className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary transition-all"
+      />
+    </div>
+  );
+
   return (
-    <div className="max-w-2xl space-y-6">
-      <div className="space-y-4">
-        {fields.map((field) => (
-          <div key={field.name}>
-            <label className="block text-gray-400 text-xs mb-1.5">{field.label}</label>
-            <input
-              type={field.type}
-              name={field.name}
-              value={form[field.name] || ''}
-              onChange={handleChange}
-              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-primary transition-all"
-            />
-          </div>
-        ))}
+    <div className="max-w-2xl space-y-8">
+      <div>
+        <h3 className="text-white font-medium mb-4 text-lg border-b border-white/10 pb-2">Pengaturan Umum</h3>
+        <div className="space-y-4">
+          {generalFields.map(renderField)}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-white font-medium mb-4 text-lg border-b border-white/10 pb-2">Hero Section</h3>
+        <div className="space-y-4">
+          {heroFields.map(renderField)}
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
