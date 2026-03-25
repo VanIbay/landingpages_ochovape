@@ -79,7 +79,7 @@ export default function HeroBanner() {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white leading-tight mb-6"
         >
           <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Vape Store Terpercaya & Terdekat</span>
-          <span className="gradient-text block text-2xl sm:text-3xl md:text-4xl mt-3">di Pasir Angin, Cileungsi</span>
+          <span className="gradient-text block text-2xl sm:text-3xl md:text-4xl mt-3">di Cilangkap, Jakarta Timur</span>
         </motion.h1>
 
         {/* Subheadline */}

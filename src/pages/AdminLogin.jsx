@@ -37,7 +37,7 @@ export default function AdminLogin() {
 
         <div className="relative w-full max-w-md">
           <div className="text-center mb-8 flex flex-col items-center">
-            <img src="/logo-ocho.jpeg" alt="Ocho Vape Logo" className="w-20 h-20 rounded-full mb-4 shadow-lg border border-white/10" />
+            <img src="/logo-ocho.jpeg" alt="Ocho Vape Store Logo" className="w-20 h-20 rounded-full mb-4 shadow-lg border border-white/10" />
             <h1 className="text-3xl font-heading font-bold text-primary mb-1">
               Ocho<span className="text-white">Vape</span>
             </h1>
